@@ -11,14 +11,10 @@ import Cta from "@/components/CTA";
 import SocialMedia from "@/components/SocialMedia";
 import JourneySection from "@/components/JourneySection";
 import KnowMoreSection from "@/components/KnowMoreSection";
-import OrangeParticles from "@/components/OrangeParticles";
 
 const Page = () => {
   return (
     <div className="relative flex flex-col min-h-screen w-full">
-      {/* Orange Particles Background */}
-      <OrangeParticles />
-
       <Hero />
       <JourneySection />
       <Vision />
