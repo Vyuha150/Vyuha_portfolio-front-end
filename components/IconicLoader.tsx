@@ -62,8 +62,7 @@ export default function IconicLoader() {
       <div className="relative w-80 h-3 bg-gradient-to-r from-[#2a1a0a] to-[#1a1207] rounded-full overflow-hidden border border-orange-400/30">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-orange-400/10 to-transparent animate-shimmer-bg" />
         <div
-          className="h-full bg-gradient-to-r from-orange-400 via-yellow-400 to-red-400 animate-progress-wave rounded-full relative overflow-hidden"
-          style={{ width: "45%" }}
+          className="h-full w-0 bg-gradient-to-r from-orange-400 via-yellow-400 to-red-400 animate-progress-wave rounded-full relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-progress-shine" />
         </div>
@@ -169,11 +168,11 @@ export default function IconicLoader() {
         }
         
         .animate-progress-wave {
-          animation: progress-wave 2s ease-in-out infinite alternate;
+          animation: progress-wave 2s ease-in-out forwards;
         }
         @keyframes progress-wave {
-          0% { width: 30%; }
-          100% { width: 70%; }
+          0% { width: 0%; }
+          100% { width: 100%; }
         }
         
         .animate-progress-shine {

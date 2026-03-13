@@ -15,6 +15,53 @@ interface Achievement {
   date: string;
 }
 
+// Fallback list of achievements that maps to files in public/achievements/
+// This is used when the backend API is not available.
+const defaultAchievements: Achievement[] = [
+  {
+    _id: '1',
+    title: 'AP Red Cross Mobile Application Launched',
+    description: 'The Indian Red Cross Society launched the AP Red Cross mobile application to facilitate volunteering and blood donation initiatives across Andhra Pradesh. The platform enables individuals to register as volunteers, participate in humanitarian activities, and support emergency response efforts more efficiently.',
+    image: '/achievements/signal-2026-03-14-005200.jpeg',
+    date: '2026-03-14',
+  },
+  {
+    _id: '2',
+    title: 'Students Lead Social Awareness Drive in Villages',
+    description: 'Students participated in a community engagement program aimed at spreading awareness on environmental conservation and social responsibility. The initiative involved rallies, discussions, and activities designed to inspire positive change in the community.',
+    image: '/achievements/signal-2026-03-14-005200_002.jpeg',
+    date: '2026-03-14',
+  },
+  {
+    _id: '3',
+    title: 'Community Awareness Campaign Held in Local Villages',
+    description: 'An outreach program was conducted to raise awareness among villagers on social and environmental issues. Volunteers interacted with residents and students, encouraging responsible practices and active community participation.',
+    image: '/achievements/signal-2026-03-14-005200_003.jpeg',
+    date: '2026-03-14',
+  },
+  {
+    _id: '4',
+    title: 'Health Awareness Program Conducted for Rural Communities',
+    description: 'A health awareness initiative was organized to educate the public about preventive healthcare and hygiene practices. Medical professionals and volunteers addressed participants, providing guidance on maintaining good health and improving community well-being.',
+    image: '/achievements/signal-2026-03-14-005200_004.jpeg',
+    date: '2026-03-14',
+  },
+  {
+    _id: '5',
+    title: 'Public Awareness Rally Against Plastic Pollution',
+    description: 'Students and volunteers conducted an awareness rally highlighting the environmental impact of plastic waste. The rally emphasized reducing plastic consumption and encouraged the community to adopt eco-friendly practices for a cleaner and healthier environment.',
+    image: '/achievements/signal-2026-03-14-005200_005.jpeg',
+    date: '2026-03-14',
+  },
+  {
+    _id: '6',
+    title: 'Plastic Awareness Rally Organized in Katuru',
+    description: 'A plastic awareness rally was organized in Katuru village to educate citizens about the harmful effects of plastic usage. Volunteers and students participated actively, spreading awareness about environmental protection and promoting sustainable alternatives to plastic in daily life.',
+    image: '/achievements/signal-2026-03-14-005200_006.jpeg',
+    date: '2026-03-14',
+  },
+];
+
 const AchievementCard = ({ achievement, index }: { achievement: Achievement; index: number }) => {
   const [open, setOpen] = useState(false);
   
@@ -92,15 +139,23 @@ const AchievementCard = ({ achievement, index }: { achievement: Achievement; ind
 };
 
 const AchievementsPage = () => {
-  const [achievements, setAchievements] = useState<Achievement[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [achievements, setAchievements] = useState<Achievement[]>(defaultAchievements);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchAchievements = async () => {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!baseUrl) {
+        // No API configured; use fallback images from /public/achievements/
+        return;
+      }
+
+      setLoading(true);
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL;
         const response = await axios.get(`${baseUrl}/api/achievements`);
-        setAchievements(response.data);
+        if (response?.data?.length) {
+          setAchievements(response.data);
+        }
       } catch (error) {
         console.error('Error fetching achievements:', error);
       } finally {

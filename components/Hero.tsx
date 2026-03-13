@@ -18,10 +18,10 @@ import { GridOverlay } from "./shared/GridOverlay";
 
 // Image stack data
 const stackImages = [
-  "/project3.jpg",
+  "/portfolio/achievement2.jpg",
   "/clubs/club1.jpg",
   "/portfolio/achievement1.jpg",
-  "/project2.jpg",
+  "/portfolio/achievement3.jpg",
   "/clubs/club2.jpg",
 ];
 
