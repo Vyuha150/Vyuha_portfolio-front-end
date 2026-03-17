@@ -34,6 +34,26 @@ import Cookies from "js-cookie";
 
 declare const Razorpay: any;
 
+const normalizeLinkedinUrl = (value?: string) => {
+  if (!value) return undefined;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+
+  const withProtocol = /^https?:\/\//i.test(trimmed)
+    ? trimmed
+    : `https://${trimmed}`;
+
+  try {
+    const parsed = new URL(withProtocol);
+    if (!parsed.hostname.toLowerCase().includes("linkedin.com")) {
+      return undefined;
+    }
+    return parsed.toString();
+  } catch {
+    return undefined;
+  }
+};
+
 const formSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
@@ -192,6 +212,7 @@ function MembershipApplicationContent() {
       // Convert interests to array by splitting on commas and newlines
       const payload = {
         ...values,
+        linkedinProfile: normalizeLinkedinUrl(values.linkedinProfile),
         interests: values.interests
           .split(/[,\n]/)
           .map((i) => i.trim())
@@ -205,10 +226,32 @@ function MembershipApplicationContent() {
 
       if (response.data.orderId) {
         // If payment is required, initiate payment
-        const { orderId, amount, currency } = response.data;
+        const { orderId, amount, currency, keyId } = response.data;
+        const effectiveRazorpayKey =
+          keyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+        const isNonLocalhost =
+          typeof window !== "undefined" &&
+          !["localhost", "127.0.0.1"].includes(window.location.hostname);
+
+        if (!effectiveRazorpayKey) {
+          toast.error("Payment key is not configured.");
+          return;
+        }
+
+        if (isNonLocalhost && effectiveRazorpayKey.startsWith("rzp_test_")) {
+          toast.error(
+            "Payment gateway is still in test mode. Switch Razorpay keys to live for production."
+          );
+          return;
+        }
+
+        if (typeof Razorpay === "undefined") {
+          toast.error("Payment gateway failed to load. Please refresh and try again.");
+          return;
+        }
 
         const options = {
-          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+          key: effectiveRazorpayKey,
           amount,
           currency,
           name: "Vyuha Membership",
@@ -223,7 +266,7 @@ function MembershipApplicationContent() {
               const verifyResponse = await axios.post(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/membership/verify-payment`,
                 {
-                  orderId,
+                  orderId: paymentResponse.razorpay_order_id,
                   paymentId: paymentResponse.razorpay_payment_id,
                   signature: paymentResponse.razorpay_signature,
                 }
