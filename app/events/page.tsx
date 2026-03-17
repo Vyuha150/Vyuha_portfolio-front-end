@@ -125,12 +125,24 @@ export default function EventsPage() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const url = token
-          ? `${process.env.NEXT_PUBLIC_API_URL}/api/events`
-          : `${process.env.NEXT_PUBLIC_API_URL}/api/events/public`;
-        const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        const response = await axios.get(url, { headers });
-        console.log("Fetched events:", response.data);
+        const privateUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/events`;
+        const publicUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/events/public`;
+
+        let response;
+
+        if (token) {
+          try {
+            response = await axios.get(privateUrl, {
+              headers: { Authorization: `Bearer ${token}` },
+              timeout: 12000,
+            });
+          } catch {
+            response = await axios.get(publicUrl, { timeout: 12000 });
+          }
+        } else {
+          response = await axios.get(publicUrl, { timeout: 12000 });
+        }
+
         if (response.status === 200) {
           const formattedEvents = response.data.map((event: any) => ({
             ...event,
@@ -140,6 +152,7 @@ export default function EventsPage() {
         }
       } catch (error) {
         console.error("Error fetching events:", error);
+        setEvents([]);
       }
     };
     fetchEvents();

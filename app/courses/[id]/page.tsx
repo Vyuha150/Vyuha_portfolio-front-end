@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
+import { resolveImageUrl } from "@/lib/resolveImageUrl";
 
 export default function CourseDetailsPage() {
   const params = useParams();
@@ -16,6 +17,8 @@ export default function CourseDetailsPage() {
     email: "",
     phone: "",
   });
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -66,6 +69,19 @@ export default function CourseDetailsPage() {
   return (
     <main className="min-h-screen text-white py-12 px-4 md:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto bg-black/50 p-8 rounded-lg shadow-lg">
+        {course.coursePhoto && (
+          <div className="mb-6 overflow-hidden rounded-lg border border-gray-700">
+            <img
+              src={resolveImageUrl(course.coursePhoto, apiUrl)}
+              alt={course.title}
+              className="w-full h-64 object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/course1.jpg";
+              }}
+            />
+          </div>
+        )}
+
         {/* Course Title */}
         <h1 className="text-4xl font-bold text-orange-500 mb-6">
           {course.title}
@@ -74,9 +90,12 @@ export default function CourseDetailsPage() {
         {/* Instructor Info */}
         <div className="flex items-center mb-8">
           <img
-            src={course.instructorPhoto}
+            src={resolveImageUrl(course.instructorPhoto, apiUrl) || "/instructor1.jpg"}
             alt={course.instructor}
             className="w-16 h-16 rounded-full mr-4"
+            onError={(e) => {
+              e.currentTarget.src = "/instructor1.jpg";
+            }}
           />
           <div>
             <h2 className="text-xl font-semibold">{course.instructor}</h2>

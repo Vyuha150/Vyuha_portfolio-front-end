@@ -64,6 +64,7 @@ type Organization = {
 };
 
 export default function OrganizationsPage() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const [searchQuery, setSearchQuery] = useState("");
   const [domainFilter, setDomainFilter] = useState("");
   const [regionFilter, setRegionFilter] = useState("");
@@ -91,10 +92,17 @@ export default function OrganizationsPage() {
     async function fetchOrganizations() {
       setLoading(true);
       setError("");
+
+      if (!apiUrl) {
+        setError("API URL is not configured");
+        setLoading(false);
+        return;
+      }
+
       try {
         const [featuredRes, newlyJoinedRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/partnerships/organizations?featured=true"),
-          axios.get("http://localhost:5000/api/partnerships/organizations?newlyJoined=true"),
+          axios.get(`${apiUrl}/api/partnerships/organizations?featured=true`),
+          axios.get(`${apiUrl}/api/partnerships/organizations?newlyJoined=true`),
         ]);
         setFeaturedOrgs(featuredRes.data || []);
         setNewlyJoined(newlyJoinedRes.data || []);
@@ -105,7 +113,7 @@ export default function OrganizationsPage() {
       }
     }
     fetchOrganizations();
-  }, []);
+  }, [apiUrl]);
 
   const InviteForm = () => {
     const [success, setSuccess] = useState(false);
