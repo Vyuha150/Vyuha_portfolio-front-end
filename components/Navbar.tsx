@@ -44,8 +44,15 @@ const navLinks = [
   // { name: "Events", href: "/events" },
   // { name: "VCC Events", href: "/vcc-events" },
   // { name: "Student Zone", href: "/studentzone" },
-  { name: "Business", href: "/business" },
   // { name: "Clubs", href: "/club-partner" },
+];
+
+const businessLinks = [
+  { name: "Business Services", href: "/business" },
+  {
+    name: "Exports and agri business",
+    href: "/business/exports-and-agri-business",
+  },
 ];
 
 const eventLinks = [
@@ -95,6 +102,7 @@ export default function Navbar() {
   const [showEventMenu, setShowEventMenu] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showConnectMenu, setShowConnectMenu] = useState(false);
+  const [showBusinessMenu, setShowBusinessMenu] = useState(false);
   const [showAdditionalMenu, setShowAdditionalMenu] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -212,6 +220,43 @@ export default function Navbar() {
               </motion.div>
             );
           })}
+
+          {/* Business Dropdown */}
+          <div
+            className="relative"
+            onMouseEnter={() => setShowBusinessMenu(true)}
+            onMouseLeave={() => setShowBusinessMenu(false)}
+          >
+            <button
+              className={`flex items-center space-x-2 text-sm font-medium transition-all ${
+                pathname.startsWith("/business") ? "text-orange-400" : "text-white"
+              }`}
+            >
+              <span>Business</span>
+              <ChevronDown className="w-4 h-4" />
+            </button>
+            <AnimatePresence>
+              {showBusinessMenu && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute right-0 mt-2 w-64 bg-[#0c0c0ccc] border border-white/10 rounded-lg shadow-lg overflow-hidden"
+                >
+                  {businessLinks.map((link) => (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      className="block px-4 py-2 text-sm text-white hover:bg-orange-500/20 transition-all"
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           {/* Events Dropdown */}
           <div
@@ -476,6 +521,43 @@ export default function Navbar() {
                       <span>{link.name}</span>
                     </Link>
                   ))}
+                </div>
+
+                {/* Business Links Dropdown */}
+                <div>
+                  <button
+                    onClick={() => setShowBusinessMenu(!showBusinessMenu)}
+                    className="flex items-center justify-between w-full text-sm font-bold text-white mb-2"
+                  >
+                    Business
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform ${
+                        showBusinessMenu ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+                  <AnimatePresence>
+                    {showBusinessMenu && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="pl-4 space-y-2"
+                      >
+                        {businessLinks.map((link) => (
+                          <Link
+                            key={link.name}
+                            href={link.href}
+                            className="block text-sm font-medium text-white hover:text-orange-400 transition-all"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            {link.name}
+                          </Link>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {/* Events Links Dropdown */}
