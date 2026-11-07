@@ -15,7 +15,9 @@ import {
   Search, 
   Briefcase,
   Upload,
-  X
+  X,
+  Users,
+  Award
 } from "lucide-react";
 
 interface Job {
@@ -37,6 +39,33 @@ interface ApplicationData {
   coverLetter: string;
   resume: File | null;
 }
+
+const impactStats = [
+  {
+    value: "10,000+",
+    label: "Students Benefitted",
+    description: "10,000+ students benefitted",
+    icon: Users,
+  },
+  {
+    value: "1,000+",
+    label: "Internships Delivered",
+    description: "1,000+ internships delivered",
+    icon: Briefcase,
+  },
+  {
+    value: "25+",
+    label: "Industrial Partners",
+    description: "25+ industrial partners",
+    icon: Building2,
+  },
+  {
+    value: "100+",
+    label: "Large-Scale Events & Activities",
+    description: "100+ large-scale events and activities",
+    icon: Award,
+  },
+];
 
 export default function InternshipsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -229,6 +258,51 @@ export default function InternshipsPage() {
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
             Discover amazing job opportunities and internships. Apply directly and take the next step in your career journey.
           </p>
+        </motion.div>
+
+        {/* Internship Impact / Our Impact Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mb-14"
+        >
+          <div className="text-center mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
+              Our Impact
+            </h2>
+            <div className="w-16 h-1 bg-gradient-to-r from-orange-500 to-orange-400 mx-auto rounded-full mt-2" />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {impactStats.map((stat, index) => {
+              const Icon = stat.icon;
+              return (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.15 + index * 0.08 }}
+                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                  className="relative group rounded-2xl bg-gray-900/80 backdrop-blur-sm border border-gray-800 hover:border-orange-500/50 p-6 flex flex-col items-center text-center transition-all duration-300 hover:shadow-[0_0_25px_rgba(249,115,22,0.12)] overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-b from-orange-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+                  <div className="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 mb-4 group-hover:scale-110 group-hover:bg-orange-500/20 transition-all duration-300">
+                    <Icon className="w-6 h-6" />
+                  </div>
+
+                  <div className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-2 bg-gradient-to-r from-white via-orange-100 to-orange-400 bg-clip-text group-hover:text-transparent transition-all">
+                    {stat.value}
+                  </div>
+
+                  <h3 className="text-base font-semibold text-gray-200 group-hover:text-orange-400 transition-colors">
+                    {stat.label}
+                  </h3>
+                </motion.div>
+              );
+            })}
+          </div>
         </motion.div>
 
         {/* Search and Filter Section */}

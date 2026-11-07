@@ -76,6 +76,7 @@ const connectLinks = [
   { name: "Podcast Connect", href: "/podcast-partner" },
   { name: "Spirituality", href: "/path" },
   { name: "Partnerships", href: "/patnerships" },
+  { name: "Our Partners & Clients", href: "/our-partners-and-clients" },
 ];
 
 const additionalLinks = [

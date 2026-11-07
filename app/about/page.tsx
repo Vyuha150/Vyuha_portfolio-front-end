@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import { GraduationCap, Building2, Award, CheckCircle2 } from "lucide-react";
 
 const HeroSection: React.FC = () => {
   const ref = useRef(null);
@@ -143,6 +144,76 @@ const particlePositions = [
 
 const particleIds = ["p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8"];
 
+const accreditations = [
+  {
+    name: "AICTE Approved",
+    icon: GraduationCap,
+  },
+  {
+    name: "APSCHE Approved",
+    icon: Building2,
+  },
+  {
+    name: "MSME Approved",
+    icon: Award,
+  },
+];
+
+const AccreditationsSection: React.FC = () => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
+
+  return (
+    <motion.section
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      transition={{ duration: 0.8 }}
+      className="relative max-w-6xl mx-auto px-4 py-16"
+    >
+      <div className="text-center mb-12">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 bg-clip-text text-transparent mb-4"
+        >
+          Certifications & Accreditations
+        </motion.h2>
+        <div className="w-20 h-1 bg-gradient-to-r from-orange-500 to-orange-400 mx-auto rounded-full" />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {accreditations.map((item, index) => {
+          const Icon = item.icon;
+          return (
+            <motion.div
+              key={item.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className="relative group rounded-2xl bg-[#0c0c0c]/80 backdrop-blur-md border border-orange-500/20 hover:border-orange-500/50 p-8 flex flex-col items-center text-center transition-all duration-300 hover:shadow-[0_0_30px_rgba(249,115,22,0.15)] overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-orange-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              <div className="w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-400 mb-5 group-hover:scale-110 group-hover:bg-orange-500/20 group-hover:border-orange-500/50 transition-all duration-300 shadow-[0_0_15px_rgba(249,115,22,0.1)]">
+                <Icon className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-orange-400 transition-colors duration-200 tracking-tight mb-3">
+                {item.name}
+              </h3>
+              <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Verified Recognition</span>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+    </motion.section>
+  );
+};
+
 export default function AboutPage() {
   const detailsRef = useRef(null);
   const detailsInView = useInView(detailsRef, { once: true, amount: 0.1 });
@@ -259,6 +330,9 @@ export default function AboutPage() {
             </div>
           </motion.div>
         </section>
+
+        {/* Certifications & Accreditations Section */}
+        <AccreditationsSection />
 
         {/* Hero Section */}
         <HeroSection />
